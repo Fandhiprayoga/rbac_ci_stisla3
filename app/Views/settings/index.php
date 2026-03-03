@@ -101,6 +101,79 @@ $s = function (string $key) use ($settings) {
                 </div>
               </div>
             </form>
+
+            <!-- ========== BRANDING (Logo & Favicon) ========== -->
+            <hr>
+            <h6 class="text-muted mb-3"><i class="fas fa-image"></i> Branding</h6>
+
+            <form action="<?= base_url('admin/settings/update/branding') ?>" method="post" enctype="multipart/form-data">
+              <?= csrf_field() ?>
+
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Logo Aplikasi</label>
+                <div class="col-sm-9">
+                  <div class="mb-2">
+                    <?php
+                      $currentLogo = $settings['App.siteLogo'] ?? '';
+                      $logoUrl = ! empty($currentLogo) ? base_url($currentLogo) : base_url('assets/img/stisla-fill.svg');
+                    ?>
+                    <img src="<?= $logoUrl ?>" alt="Current Logo" id="logoPreview"
+                         style="max-height: 80px; max-width: 200px; border: 1px solid #ddd; padding: 4px; border-radius: 6px; background: #f8f9fa;">
+                    <?php if (empty($currentLogo)): ?>
+                      <span class="badge badge-secondary ml-2">Default</span>
+                    <?php endif; ?>
+                  </div>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="site_logo" name="site_logo" accept="image/*"
+                           onchange="previewImage(this, 'logoPreview')">
+                    <label class="custom-file-label" for="site_logo">Pilih file logo...</label>
+                  </div>
+                  <small class="form-text text-muted">Format: PNG, JPG, SVG, WebP. Maks 2MB. Ditampilkan di halaman login/register.</small>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label">Favicon</label>
+                <div class="col-sm-9">
+                  <div class="mb-2">
+                    <?php
+                      $currentFavicon = $settings['App.siteFavicon'] ?? '';
+                      $faviconUrl = ! empty($currentFavicon) ? base_url($currentFavicon) : base_url('assets/img/stisla-fill.svg');
+                    ?>
+                    <img src="<?= $faviconUrl ?>" alt="Current Favicon" id="faviconPreview"
+                         style="max-height: 48px; max-width: 48px; border: 1px solid #ddd; padding: 4px; border-radius: 4px; background: #f8f9fa;">
+                    <?php if (empty($currentFavicon)): ?>
+                      <span class="badge badge-secondary ml-2">Default</span>
+                    <?php endif; ?>
+                  </div>
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="site_favicon" name="site_favicon" accept="image/*,.ico"
+                           onchange="previewImage(this, 'faviconPreview')">
+                    <label class="custom-file-label" for="site_favicon">Pilih file favicon...</label>
+                  </div>
+                  <small class="form-text text-muted">Format: PNG, ICO, SVG, WebP. Maks 1MB. Ikon kecil di tab browser.</small>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-9 offset-sm-3">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload Branding
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Reset to Default -->
+            <hr>
+            <form action="<?= base_url('admin/settings/reset') ?>" method="post"
+                  onsubmit="return confirm('Apakah Anda yakin ingin mereset pengaturan Umum & Branding ke default?')">
+              <?= csrf_field() ?>
+              <input type="hidden" name="tab" value="general">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-undo"></i> Reset Pengaturan Umum ke Default
+              </button>
+            </form>
           </div>
 
           <!-- ============================================ -->
@@ -129,7 +202,7 @@ $s = function (string $key) use ($settings) {
                 <div class="col-sm-9">
                   <label class="custom-switch mt-2">
                     <input type="checkbox" name="allow_registration" value="1" class="custom-switch-input"
-                           <?= ($settings['App.allowRegistration'] ?? '1') === '1' ? 'checked' : '' ?>>
+                           <?= !empty($settings['Auth.allowRegistration']) ? 'checked' : '' ?>>
                     <span class="custom-switch-indicator"></span>
                     <span class="custom-switch-description">Izinkan registrasi user baru</span>
                   </label>
@@ -166,6 +239,17 @@ $s = function (string $key) use ($settings) {
                   </button>
                 </div>
               </div>
+            </form>
+
+            <!-- Reset to Default -->
+            <hr>
+            <form action="<?= base_url('admin/settings/reset') ?>" method="post"
+                  onsubmit="return confirm('Apakah Anda yakin ingin mereset pengaturan Autentikasi ke default?')">
+              <?= csrf_field() ?>
+              <input type="hidden" name="tab" value="auth">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-undo"></i> Reset Pengaturan Autentikasi ke Default
+              </button>
             </form>
           </div>
 
@@ -271,6 +355,17 @@ $s = function (string $key) use ($settings) {
                 </div>
               </div>
             </form>
+
+            <!-- Reset to Default -->
+            <hr>
+            <form action="<?= base_url('admin/settings/reset') ?>" method="post"
+                  onsubmit="return confirm('Apakah Anda yakin ingin mereset pengaturan Email ke default?')">
+              <?= csrf_field() ?>
+              <input type="hidden" name="tab" value="mail">
+              <button type="submit" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-undo"></i> Reset Pengaturan Email ke Default
+              </button>
+            </form>
           </div>
 
         </div><!-- end tab-content -->
@@ -278,3 +373,24 @@ $s = function (string $key) use ($settings) {
     </div>
   </div>
 </div>
+
+<script>
+// Preview gambar saat dipilih
+function previewImage(input, previewId) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById(previewId).src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Update label custom-file-input
+document.querySelectorAll('.custom-file-input').forEach(function(input) {
+  input.addEventListener('change', function() {
+    var fileName = this.files[0] ? this.files[0].name : 'Pilih file...';
+    this.nextElementSibling.textContent = fileName;
+  });
+});
+</script>

@@ -2,7 +2,11 @@
 
 <?= $this->section('content') ?>
 <div class="login-brand">
-  <img src="<?= base_url('assets/img/stisla-fill.svg') ?>" alt="logo" width="100" class="shadow-light rounded-circle">
+  <?php
+    $logo = setting('App.siteLogo');
+    $logoUrl = ! empty($logo) ? base_url($logo) : base_url('assets/img/stisla-fill.svg');
+  ?>
+  <img src="<?= $logoUrl ?>" alt="logo" width="100" class="shadow-light rounded-circle">
 </div>
 
 <div class="card card-primary">
@@ -58,7 +62,9 @@
     </form>
   </div>
 </div>
+<?php if (setting('Auth.allowRegistration')): ?>
 <div class="mt-5 text-muted text-center">
   Belum punya akun? <a href="<?= url_to('register') ?>">Daftar</a>
 </div>
+<?php endif ?>
 <?= $this->endSection() ?>

@@ -60,8 +60,10 @@ $routes->group('', ['filter' => 'session'], static function ($routes) {
         $routes->group('settings', ['filter' => 'permission:admin.settings'], static function ($routes) {
             $routes->get('/', 'SettingController::index');
             $routes->post('update/general', 'SettingController::updateGeneral');
+            $routes->post('update/branding', 'SettingController::updateBranding');
             $routes->post('update/auth', 'SettingController::updateAuth');
             $routes->post('update/mail', 'SettingController::updateMail');
+            $routes->post('reset', 'SettingController::resetDefaults');
         });
     });
 });

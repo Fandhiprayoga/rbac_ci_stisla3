@@ -1,8 +1,19 @@
 <?= $this->extend('layouts/auth') ?>
 
 <?= $this->section('content') ?>
+<?php if (! setting('Auth.allowRegistration')): ?>
+<div class="text-center mt-5">
+  <h4 class="text-danger">Registrasi Ditutup</h4>
+  <p class="text-muted">Registrasi user baru saat ini tidak diizinkan.</p>
+  <a href="<?= url_to('login') ?>" class="btn btn-primary">Kembali ke Login</a>
+</div>
+<?php $this->endSection(); return; endif; ?>
 <div class="login-brand">
-  <img src="<?= base_url('assets/img/stisla-fill.svg') ?>" alt="logo" width="100" class="shadow-light rounded-circle">
+  <?php
+    $logo = setting('App.siteLogo');
+    $logoUrl = ! empty($logo) ? base_url($logo) : base_url('assets/img/stisla-fill.svg');
+  ?>
+  <img src="<?= $logoUrl ?>" alt="logo" width="100" class="shadow-light rounded-circle">
 </div>
 
 <div class="card card-primary">

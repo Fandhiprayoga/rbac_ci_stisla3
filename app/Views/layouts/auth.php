@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-  <title><?= $title ?? 'Login' ?> &mdash; CI4 Shield RBAC</title>
+  <title><?= $title ?? 'Login' ?> &mdash; <?= setting('App.siteName') ?? 'CI4 Shield RBAC' ?></title>
+
+  <!-- Favicon -->
+  <?php
+    $favicon = setting('App.siteFavicon');
+    $faviconUrl = ! empty($favicon) ? base_url($favicon) : base_url('assets/img/stisla-fill.svg');
+  ?>
+  <link rel="shortcut icon" href="<?= $faviconUrl ?>">
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -44,7 +51,7 @@
             <?= $this->renderSection('content') ?>
 
             <div class="simple-footer">
-              Copyright &copy; <?= date('Y') ?> CI4 Shield RBAC
+              Copyright &copy; <?= date('Y') ?> <?= setting('App.siteFooter') ?? 'CI4 Shield RBAC' ?>
             </div>
           </div>
         </div>
