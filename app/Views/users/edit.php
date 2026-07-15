@@ -1,55 +1,64 @@
-<div class="row">
-  <div class="col-12 col-md-8 offset-md-2">
-    <div class="card">
-      <div class="card-header">
-        <h4>Edit User: <?= esc($user_edit->username) ?></h4>
-      </div>
-      <div class="card-body">
-        <form action="<?= base_url('admin/users/update/' . $user_edit->id) ?>" method="post">
-          <?= csrf_field() ?>
+<div class="page__section">
+  <div class="card" style="max-width: 720px; margin: 0 auto;">
+    <div class="card__header">
+      <span class="card__title">Edit User: <?= esc($user_edit->username) ?></span>
+    </div>
+    <div class="card__body">
+      <form action="<?= base_url('admin/users/update/' . $user_edit->id) ?>" method="post" class="flex flex-col gap-4">
+        <?= csrf_field() ?>
 
-          <div class="form-group">
-            <label for="username">Username <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="username" name="username"
+        <div class="field">
+          <label for="username" class="field__label">Username <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="text" class="input" id="username" name="username"
                    value="<?= old('username', $user_edit->username) ?>" required>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="email">Email <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" id="email" name="email"
+        <div class="field">
+          <label for="email" class="field__label">Email <span class="text-danger">*</span></label>
+          <div class="input-group">
+            <input type="email" class="input" id="email" name="email"
                    value="<?= old('email', $user_edit->email) ?>" required>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
-            <small class="form-text text-muted">Kosongkan jika tidak ingin mengubah password. Minimal 8 karakter.</small>
+        <div class="field">
+          <label for="password" class="field__label">Password</label>
+          <div class="input-group">
+            <input type="password" class="input" id="password" name="password">
           </div>
+          <small class="text-muted-foreground text-xs">Kosongkan jika tidak ingin mengubah password. Minimal 8 karakter.</small>
+        </div>
 
-          <?php if (activeGroupCan('users.manage-roles')): ?>
-          <div class="form-group">
-            <label>Role <small class="text-muted">(bisa pilih lebih dari satu)</small></label>
+        <?php if (activeGroupCan('users.manage-roles')): ?>
+        <div class="field">
+          <label class="field__label">Role <small class="text-muted-foreground">(bisa pilih lebih dari satu)</small></label>
+          <div class="flex flex-col gap-2 mt-1">
             <?php foreach ($groups as $key => $group): ?>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="group-<?= $key ?>"
+              <div class="field__item">
+                <input class="checkbox" type="checkbox" id="group-<?= $key ?>"
                        name="groups[]" value="<?= $key ?>"
                        <?= in_array($key, $userGroups) ? 'checked' : '' ?>>
-                <label class="custom-control-label" for="group-<?= $key ?>">
+                <label class="field__label" for="group-<?= $key ?>">
                   <strong><?= esc($group['title']) ?></strong> — <?= esc($group['description']) ?>
                 </label>
               </div>
             <?php endforeach; ?>
           </div>
-          <?php endif; ?>
+        </div>
+        <?php endif; ?>
 
-          <div class="form-group text-right">
-            <a href="<?= base_url('admin/users') ?>" class="btn btn-secondary mr-1">Batal</a>
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i> Perbarui
-            </button>
-          </div>
-        </form>
-      </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <a href="<?= base_url('admin/users') ?>" class="button button--outline button--neutral">Batal</a>
+          <button type="submit" class="button button--primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m16.475 5.408l2.117 2.117m-.756-3.482L12.109 9.77a2.1 2.1 0 0 0-.58 1.082L11 13l2.148-.53c.408-.1.787-.3 1.083-.579l5.727-5.727a1.85 1.85 0 1 0-2.617-2.617" />
+            </svg>
+            Perbarui
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

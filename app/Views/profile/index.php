@@ -1,63 +1,76 @@
 <?php $currentUser = auth()->user(); ?>
 
-<div class="row">
-  <div class="col-12 col-md-4">
-    <div class="card card-primary">
-      <div class="card-header">
-        <h4>Info Profil</h4>
-      </div>
-      <div class="card-body text-center">
-        <img alt="avatar" src="<?= base_url('assets/img/avatar/avatar-1.png') ?>" class="rounded-circle mb-3" width="100">
-        <h5><?= esc($currentUser->username) ?></h5>
-        <p class="text-muted"><?= esc($currentUser->email) ?></p>
-        <?php foreach ($userGroups as $group): ?>
-          <?php
-            $badgeClass = match($group) {
-              'superadmin' => 'badge-danger',
-              'admin'      => 'badge-warning',
-              'manager'    => 'badge-info',
-              default      => 'badge-primary',
-            };
-          ?>
-          <span class="badge <?= $badgeClass ?>"><?= ucfirst($group) ?></span>
-        <?php endforeach; ?>
+<div class="page__section">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-12 lg:col-span-4">
+      <div class="card text-center">
+        <div class="card__body">
+          <span class="avatar avatar--xl avatar--circle mx-auto mb-3" data-stisla-avatar>
+            <span class="avatar__fallback" style="font-size: 2rem;"><?= esc(strtoupper(substr($currentUser->username, 0, 2))) ?></span>
+          </span>
+          <h5 class="text-lg font-semibold"><?= esc($currentUser->username) ?></h5>
+          <p class="text-muted-foreground"><?= esc($currentUser->email) ?></p>
+          <div class="flex justify-center gap-1 mt-2">
+            <?php foreach ($userGroups as $group): ?>
+              <?php
+                $badgeClass = match($group) {
+                  'superadmin' => 'danger',
+                  'admin'      => 'warning',
+                  'manager'    => 'info',
+                  default      => 'primary',
+                };
+              ?>
+              <span class="badge badge--soft badge--<?= $badgeClass ?>"><?= ucfirst($group) ?></span>
+            <?php endforeach; ?>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="col-12 col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h4>Edit Profil</h4>
-      </div>
-      <div class="card-body">
-        <form action="<?= base_url('profile/update') ?>" method="post">
-          <?= csrf_field() ?>
+    <div class="col-span-12 lg:col-span-8">
+      <div class="card">
+        <div class="card__header">
+          <span class="card__title">Edit Profil</span>
+        </div>
+        <div class="card__body">
+          <form action="<?= base_url('profile/update') ?>" method="post" class="flex flex-col gap-4">
+            <?= csrf_field() ?>
 
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username"
-                   value="<?= old('username', $currentUser->username) ?>" required>
-          </div>
+            <div class="field">
+              <label for="username" class="field__label">Username</label>
+              <div class="input-group">
+                <input type="text" class="input" id="username" name="username"
+                       value="<?= old('username', $currentUser->username) ?>" required>
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" class="form-control" id="email" value="<?= esc($currentUser->email) ?>" disabled>
-            <small class="form-text text-muted">Email tidak dapat diubah.</small>
-          </div>
+            <div class="field">
+              <label for="email" class="field__label">Email</label>
+              <div class="input-group">
+                <input type="email" class="input" id="email" value="<?= esc($currentUser->email) ?>" disabled>
+              </div>
+              <small class="text-muted-foreground text-xs">Email tidak dapat diubah.</small>
+            </div>
 
-          <div class="form-group">
-            <label for="password">Password Baru</label>
-            <input type="password" class="form-control" id="password" name="password">
-            <small class="form-text text-muted">Kosongkan jika tidak ingin mengubah password.</small>
-          </div>
+            <div class="field">
+              <label for="password" class="field__label">Password Baru</label>
+              <div class="input-group">
+                <input type="password" class="input" id="password" name="password">
+              </div>
+              <small class="text-muted-foreground text-xs">Kosongkan jika tidak ingin mengubah password.</small>
+            </div>
 
-          <div class="form-group text-right">
-            <button type="submit" class="btn btn-primary">
-              <i class="fas fa-save"></i> Simpan Perubahan
-            </button>
-          </div>
-        </form>
+            <div class="flex justify-end pt-2">
+              <button type="submit" class="button button--primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M17 21H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4h6l7 7v7a4 4 0 0 1-4 4z" />
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M13 3v4a2 2 0 0 0 2 2h4" />
+                </svg>
+                Simpan Perubahan
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

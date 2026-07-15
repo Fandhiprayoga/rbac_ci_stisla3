@@ -2,9 +2,6 @@
 $currentUser = auth()->user();
 $currentUrl  = uri_string();
 
-/**
- * Helper untuk cek apakah menu aktif
- */
 function isMenuActive(string $path): string {
     $currentUrl = uri_string();
     return (strpos($currentUrl, $path) !== false) ? 'active' : '';
@@ -20,65 +17,149 @@ function isDropdownActive(array $paths): string {
     return '';
 }
 ?>
-<div class="main-sidebar sidebar-style-1">
-  <aside id="sidebar-wrapper">
-    <div class="sidebar-brand">
-      <a href="<?= base_url('dashboard') ?>"><?= esc(setting('App.siteName') ?? 'CI4 RBAC') ?></a>
-    </div>
-    <div class="sidebar-brand sidebar-brand-sm">
-      <a href="<?= base_url('dashboard') ?>"><?= esc(setting('App.siteNameShort') ?? 'C4') ?></a>
-    </div>
-    <ul class="sidebar-menu">
+<aside class="sidebar sidebar--lg sidebar--app" data-stisla-sidebar>
+  <header class="sidebar__header">
+    <a class="sidebar__brand" href="<?= base_url('dashboard') ?>">
+      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M12 1.5l3.4 7.1 7.1 3.4-7.1 3.4-3.4 7.1-3.4-7.1L1.5 12l7.1-3.4z" opacity=".45" />
+        <path d="M12 1.5l3.4 7.1L12 12 8.6 8.6z" />
+      </svg>
+      <span><?= esc(setting('App.siteName') ?? 'CI4 RBAC') ?></span>
+    </a>
+  </header>
 
+  <div class="sidebar__search">
+    <div class="input-group input-group--search">
+      <span class="input-group__text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11.5" cy="11.5" r="9.5" />
+            <path stroke-linecap="round" d="M18.5 18.5L22 22" />
+          </g>
+        </svg>
+      </span>
+      <input type="search" class="input" placeholder="Search..." aria-label="Search" />
+    </div>
+  </div>
+
+  <div class="sidebar__content">
+    <nav class="sidebar__menu">
       <!-- Dashboard -->
-      <li class="menu-header">Dashboard</li>
-      <li class="<?= isMenuActive('dashboard') && !str_contains($currentUrl, 'admin') ? 'active' : '' ?>">
-        <a class="nav-link" href="<?= base_url('dashboard') ?>"><i class="fas fa-fire"></i> <span>Dashboard</span></a>
-      </li>
-
-      <!-- Admin Menu (hanya untuk active group yang punya akses admin) -->
-      <?php if (activeGroupCan('admin.access')): ?>
-      <li class="menu-header">Administrasi</li>
-
-      <!-- User Management -->
-      <?php if (activeGroupCan('users.list')): ?>
-      <li class="<?= isMenuActive('admin/users') ?>">
-        <a class="nav-link" href="<?= base_url('admin/users') ?>"><i class="fas fa-users"></i> <span>Manajemen User</span></a>
-      </li>
-      <?php endif; ?>
-
-      <!-- Role Management (superadmin only) -->
-      <?php if (activeGroupIs('superadmin')): ?>
-      <li class="nav-item dropdown <?= isDropdownActive(['admin/roles']) ?>">
-        <a href="#" class="nav-link has-dropdown"><i class="fas fa-user-shield"></i> <span>Role & Permission</span></a>
-        <ul class="dropdown-menu">
-          <li class="<?= isMenuActive('admin/roles') && !str_contains($currentUrl, 'permissions') ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/roles') ?>">Daftar Role</a>
-          </li>
-          <li class="<?= isMenuActive('admin/roles/permissions') ? 'active' : '' ?>">
-            <a class="nav-link" href="<?= base_url('admin/roles/permissions') ?>">Permission Matrix</a>
+      <div class="sidebar__group">
+        <span class="sidebar__group-title">Menu</span>
+        <ul class="sidebar__list">
+          <li class="sidebar__item <?= isMenuActive('dashboard') && !str_contains($currentUrl, 'admin') ? 'active' : '' ?>">
+            <a class="sidebar__button" href="<?= base_url('dashboard') ?>" <?= isMenuActive('dashboard') && !str_contains($currentUrl, 'admin') ? 'aria-current="page"' : '' ?>>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M2 6.5c0-2.121 0-3.182.659-3.841S4.379 2 6.5 2s3.182 0 3.841.659S11 4.379 11 6.5s0 3.182-.659 3.841S8.621 11 6.5 11s-3.182 0-3.841-.659S2 8.621 2 6.5m11 11c0-2.121 0-3.182.659-3.841S15.379 13 17.5 13s3.182 0 3.841.659S22 15.379 22 17.5s0 3.182-.659 3.841S19.621 22 17.5 22s-3.182 0-3.841-.659S13 19.621 13 17.5" opacity=".5" />
+                <path fill="currentColor" d="M2 17.5c0-2.121 0-3.182.659-3.841S4.379 13 6.5 13s3.182 0 3.841.659S11 15.379 11 17.5s0 3.182-.659 3.841S8.621 22 6.5 22s-3.182 0-3.841-.659S2 19.621 2 17.5m11-11c0-2.121 0-3.182.659-3.841S15.379 2 17.5 2s3.182 0 3.841.659S22 4.379 22 6.5s0 3.182-.659 3.841S19.621 11 17.5 11s-3.182 0-3.841-.659S13 8.621 13 6.5" />
+              </svg>
+              <span>Dashboard</span>
+            </a>
           </li>
         </ul>
-      </li>
+      </div>
+
+      <!-- Admin Menu -->
+      <?php if (activeGroupCan('admin.access')): ?>
+      <div class="sidebar__group">
+        <span class="sidebar__group-title">Administrasi</span>
+        <ul class="sidebar__list">
+
+          <!-- User Management -->
+          <?php if (activeGroupCan('users.list')): ?>
+          <li class="sidebar__item <?= isMenuActive('admin/users') ?>">
+            <a class="sidebar__button" href="<?= base_url('admin/users') ?>" <?= isMenuActive('admin/users') ? 'aria-current="page"' : '' ?>>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="15" cy="6" r="3" fill="currentColor" opacity=".4" />
+                <ellipse cx="16" cy="17" fill="currentColor" opacity=".4" rx="5" ry="3" />
+                <circle cx="9.001" cy="6" r="4" fill="currentColor" />
+                <ellipse cx="9.001" cy="17.001" fill="currentColor" rx="7" ry="4" />
+              </svg>
+              <span>Manajemen User</span>
+            </a>
+          </li>
+          <?php endif; ?>
+
+          <!-- Role Management -->
+          <?php if (activeGroupIs('superadmin')): ?>
+          <li class="sidebar__item" data-state="<?= isDropdownActive(['admin/roles']) ? 'open' : 'closed' ?>">
+            <a class="sidebar__button" href="<?= base_url('admin/roles') ?>">
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M2 16c0-2.828 0-4.243.879-5.121C3.757 10 5.172 10 8 10h8c2.828 0 4.243 0 5.121.879C22 11.757 22 13.172 22 16s0 4.243-.879 5.121C20.243 22 18.828 22 16 22H8c-2.828 0-4.243 0-5.121-.879C2 20.243 2 18.828 2 16" opacity=".5" />
+                <path fill="currentColor" d="M12 18a2 2 0 1 0 0-4a2 2 0 0 0 0 4M6.75 8a5.25 5.25 0 0 1 10.5 0v2.004c.567.005 1.064.018 1.5.05V8a6.75 6.75 0 0 0-13.5 0v2.055a24 24 0 0 1 1.5-.051z" />
+              </svg>
+              <span>Role & Permission</span>
+            </a>
+            <button type="button" class="sidebar__item-action" data-stisla-sidebar-submenu-toggle
+              aria-expanded="<?= isDropdownActive(['admin/roles']) ? 'true' : 'false' ?>"
+              aria-controls="nav-roles" aria-label="Toggle Role & Permission submenu">
+              <span class="sidebar__caret"></span>
+            </button>
+            <div class="sidebar__submenu" id="nav-roles">
+              <ul class="sidebar__list">
+                <li class="sidebar__item <?= isMenuActive('admin/roles') && !str_contains($currentUrl, 'permissions') ? 'active' : '' ?>">
+                  <a class="sidebar__button" href="<?= base_url('admin/roles') ?>"><span>Daftar Role</span></a>
+                </li>
+                <li class="sidebar__item <?= isMenuActive('admin/roles/permissions') ? 'active' : '' ?>">
+                  <a class="sidebar__button" href="<?= base_url('admin/roles/permissions') ?>"><span>Permission Matrix</span></a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <?php endif; ?>
+
+          <!-- Settings -->
+          <?php if (activeGroupCan('admin.settings')): ?>
+          <li class="sidebar__item <?= isMenuActive('admin/settings') ?>">
+            <a class="sidebar__button" href="<?= base_url('admin/settings') ?>" <?= isMenuActive('admin/settings') ? 'aria-current="page"' : '' ?>>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" fill-rule="evenodd" d="M14.279 2.152C13.909 2 13.439 2 12.5 2s-1.408 0-1.779.152a2 2 0 0 0-1.09 1.083c-.094.223-.13.484-.145.863a1.62 1.62 0 0 1-.796 1.353a1.64 1.64 0 0 1-1.579.008c-.338-.178-.583-.276-.825-.308a2.03 2.03 0 0 0-1.49.396c-.318.242-.553.646-1.022 1.453c-.47.807-.704 1.21-.757 1.605c-.07.526.074 1.058.4 1.479c.148.192.357.353.68.555c.477.297.783.803.783 1.361s-.306 1.064-.782 1.36c-.324.203-.533.364-.682.556a2 2 0 0 0-.399 1.479c.053.394.287.798.757 1.605s.704 1.21 1.022 1.453c.424.323.96.465 1.49.396c.242-.032.487-.13.825-.308a1.64 1.64 0 0 1 1.58.008c.486.28.774.795.795 1.353c.015.38.051.64.145.863c.204.49.596.88 1.09 1.083c.37.152.84.152 1.779.152s1.409 0 1.779-.152a2 2 0 0 0 1.09-1.083c.094-.223.13-.483.145-.863c.02-.558.309-1.074.796-1.353a1.64 1.64 0 0 1 1.579-.008c.338.178.583.276.825.308c.53.07 1.066-.073 1.49-.396c.318-.242.553-.646 1.022-1.453c.47-.807.704-1.21.757-1.605a2 2 0 0 0-.4-1.479c-.148-.192-.357-.353-.68-.555c-.477-.297-.783-.803-.783-1.361s.306-1.064.782-1.36c.324-.203.533-.364.682-.556a2 2 0 0 0 .399-1.479c-.053-.394-.287-.798-.757-1.605s-.704-1.21-1.022-1.453a2.03 2.03 0 0 0-1.49-.396c-.242.032-.487.13-.825.308a1.64 1.64 0 0 1-1.58-.008a1.62 1.62 0 0 1-.795-1.353c-.015-.38-.051-.64-.145-.863a2 2 0 0 0-1.09-1.083" clip-rule="evenodd" opacity=".5" />
+                <path fill="currentColor" d="M15.523 12c0 1.657-1.354 3-3.023 3s-3.023-1.343-3.023-3S10.83 9 12.5 9s3.023 1.343 3.023 3" />
+              </svg>
+              <span>Pengaturan</span>
+            </a>
+          </li>
+          <?php endif; ?>
+        </ul>
+      </div>
       <?php endif; ?>
 
-      <!-- Settings -->
-      <?php if (activeGroupCan('admin.settings')): ?>
-      <li class="<?= isMenuActive('admin/settings') ?>">
-        <a class="nav-link" href="<?= base_url('admin/settings') ?>"><i class="fas fa-cog"></i> <span>Pengaturan</span></a>
-      </li>
-      <?php endif; ?>
-      <?php endif; ?>
+      <!-- Akun -->
+      <div class="sidebar__group">
+        <span class="sidebar__group-title">Akun</span>
+        <ul class="sidebar__list">
+          <li class="sidebar__item <?= isMenuActive('profile') ?>">
+            <a class="sidebar__button" href="<?= base_url('profile') ?>" <?= isMenuActive('profile') ? 'aria-current="page"' : '' ?>>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="currentColor" d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10" opacity=".5" />
+                <path fill="currentColor" d="M16.807 19.011A8.46 8.46 0 0 1 12 20.5a8.46 8.46 0 0 1-4.807-1.489c-.604-.415-.862-1.205-.51-1.848C7.41 15.83 8.91 15 12 15s4.59.83 5.318 2.163c.35.643.093 1.433-.511 1.848M12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6" />
+              </svg>
+              <span>Profil Saya</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 
-      <!-- Profil -->
-      <li class="menu-header">Akun</li>
-      <li class="<?= isMenuActive('profile') ?>">
-        <a class="nav-link" href="<?= base_url('profile') ?>"><i class="far fa-user"></i> <span>Profil Saya</span></a>
+  <footer class="sidebar__footer">
+    <ul class="sidebar__list">
+      <li class="sidebar__item">
+        <a class="sidebar__button" href="<?= base_url('logout') ?>">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M16 2h-1c-2.829 0-4.242 0-5.121.879S9 5.172 9 8v8c0 2.829 0 4.243.879 5.122c.878.878 2.292.878 5.119.878H16c2.828 0 4.242 0 5.121-.879C22 20.243 22 18.828 22 16V8c0-2.828 0-4.243-.879-5.121S18.828 2 16 2" opacity=".5" />
+            <path fill="currentColor" fill-rule="evenodd" d="M15.75 12a.75.75 0 0 0-.75-.75H4.027l1.961-1.68a.75.75 0 1 0-.976-1.14l-3.5 3a.75.75 0 0 0 0 1.14l3.5 3a.75.75 0 1 0 .976-1.14l-1.96-1.68H15a.75.75 0 0 0 .75-.75" clip-rule="evenodd" />
+          </svg>
+          <span>Logout</span>
+        </a>
       </li>
-      <li>
-        <a class="nav-link text-danger" href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
-      </li>
-
     </ul>
-  </aside>
-</div>
+    <div class="copyright">
+      <hr class="separator my-3" style="--separator-color: var(--sidebar-submenu-border-color)" />
+      <p class="text-xs text-muted-foreground" style="--link-color: var(--color-foreground)">
+        &copy; <?= date('Y') ?> <?= esc(setting('App.siteFooter') ?? 'CI4 Shield RBAC') ?>
+      </p>
+    </div>
+  </footer>
+</aside>
