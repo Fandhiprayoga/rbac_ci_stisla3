@@ -20,10 +20,18 @@ function isDropdownActive(array $paths): string {
 <aside class="sidebar sidebar--lg sidebar--app" data-stisla-sidebar>
   <header class="sidebar__header">
     <a class="sidebar__brand" href="<?= base_url('dashboard') ?>">
-      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M12 1.5l3.4 7.1 7.1 3.4-7.1 3.4-3.4 7.1-3.4-7.1L1.5 12l7.1-3.4z" opacity=".45" />
-        <path d="M12 1.5l3.4 7.1L12 12 8.6 8.6z" />
-      </svg>
+      <?php
+        $logo = setting('App.siteLogo');
+        $logoUrl = ! empty($logo) ? base_url($logo) : '';
+      ?>
+      <?php if ($logoUrl): ?>
+        <img src="<?= $logoUrl ?>" alt="<?= esc(setting('App.siteName') ?? 'Logo') ?>" style="height: 1.5em; width: auto;">
+      <?php else: ?>
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 1.5l3.4 7.1 7.1 3.4-7.1 3.4-3.4 7.1-3.4-7.1L1.5 12l7.1-3.4z" opacity=".45" />
+          <path d="M12 1.5l3.4 7.1L12 12 8.6 8.6z" />
+        </svg>
+      <?php endif; ?>
       <span><?= esc(setting('App.siteName') ?? 'CI4 RBAC') ?></span>
     </a>
   </header>
