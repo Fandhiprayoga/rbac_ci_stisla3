@@ -34,15 +34,15 @@
 
       <!-- Flash Messages -->
       <?php if (session()->getFlashdata('success')): ?>
-      <div class="alert alert--success mb-3">
+      <!-- <div class="alert alert--success mb-3">
         <?= session()->getFlashdata('success') ?>
-      </div>
+      </div> -->
       <?php endif; ?>
 
       <?php if (session()->getFlashdata('error')): ?>
-      <div class="alert alert--danger mb-3">
+      <!-- <div class="alert alert--danger mb-3">
         <?= session()->getFlashdata('error') ?>
-      </div>
+      </div> -->
       <?php endif; ?>
 
       <?= $this->renderSection('content') ?>
