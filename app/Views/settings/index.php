@@ -471,31 +471,39 @@ $s = function (string $key) use ($settings) {
 </div>
 
 <!-- Dialog: Test Email -->
-<div class="dialog dialog--sm" id="testEmailDialog" data-stisla-dialog data-state="closed" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+<div class="dialog dialog--sm" id="testEmailDialog" data-stisla-dialog data-state="closed" role="dialog" aria-modal="true" aria-labelledby="testEmailDialogTitle" aria-hidden="true" tabindex="-1">
   <div class="dialog__backdrop" data-stisla-dialog-dismiss></div>
   <div class="dialog__panel">
     <div class="dialog__content">
-      <h3 class="dialog__title">Test Kirim Email</h3>
-      <p class="text-muted-foreground text-sm mb-4">Kirim email percobaan menggunakan konfigurasi SMTP yang sudah disimpan.</p>
+      <div class="dialog__header">
+        <h3 class="dialog__title" id="testEmailDialogTitle">Test Kirim Email</h3>
+        <button type="button" class="dialog__close" aria-label="Tutup" data-stisla-dialog-dismiss>
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+      <div class="dialog__body">
+        <p class="text-muted-foreground text-sm mb-4">Kirim email percobaan menggunakan konfigurasi SMTP yang sudah disimpan.</p>
 
-      <div id="testEmailResult" class="hidden mb-3"></div>
+        <div id="testEmailResult" class="hidden"></div>
 
-      <div class="flex flex-col gap-3">
-        <div class="field">
-          <label for="test_email_to" class="field__label">Alamat Email Tujuan <span class="text-danger">*</span></label>
-          <input type="email" class="input" id="test_email_to" placeholder="contoh@email.com" required>
-        </div>
-        <div class="field">
-          <label for="test_email_subject" class="field__label">Subjek</label>
-          <input type="text" class="input" id="test_email_subject" value="Test Email - <?= esc(setting('App.siteName') ?? 'CI4 Shield RBAC') ?>">
-        </div>
-        <div class="field">
-          <label for="test_email_message" class="field__label">Pesan</label>
-          <textarea class="input" id="test_email_message" rows="3">Ini adalah email percobaan dari <?= esc(setting('App.siteName') ?? 'CI4 Shield RBAC') ?>. Jika Anda menerima email ini, konfigurasi SMTP sudah benar.</textarea>
+        <div class="flex flex-col gap-3">
+          <div class="field">
+            <label for="test_email_to" class="field__label">Alamat Email Tujuan <span class="text-danger">*</span></label>
+            <input type="email" class="input" id="test_email_to" placeholder="contoh@email.com" required>
+          </div>
+          <div class="field">
+            <label for="test_email_subject" class="field__label">Subjek</label>
+            <input type="text" class="input" id="test_email_subject" value="Test Email - <?= esc(setting('App.siteName') ?? 'CI4 Shield RBAC') ?>">
+          </div>
+          <div class="field">
+            <label for="test_email_message" class="field__label">Pesan</label>
+            <textarea class="input" id="test_email_message" rows="3">Ini adalah email percobaan dari <?= esc(setting('App.siteName') ?? 'CI4 Shield RBAC') ?>. Jika Anda menerima email ini, konfigurasi SMTP sudah benar.</textarea>
+          </div>
         </div>
       </div>
-
-      <div class="flex justify-end gap-2 mt-4">
+      <div class="dialog__footer">
         <button type="button" class="button button--outline button--neutral" data-stisla-dialog-dismiss>Batal</button>
         <button type="button" class="button button--primary" id="btnSendTestEmail">Kirim</button>
       </div>
@@ -529,10 +537,19 @@ $s = function (string $key) use ($settings) {
 
   function openTestEmail() {
     var dialog = document.getElementById('testEmailDialog');
-    if (dialog) {
-      dialog.dataset.state = 'open';
-      dialog.setAttribute('aria-hidden', 'false');
+    if (!dialog) return;
+    var resultDiv = document.getElementById('testEmailResult');
+    var btn = document.getElementById('btnSendTestEmail');
+    if (resultDiv) {
+      resultDiv.className = 'hidden';
+      resultDiv.textContent = '';
     }
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Kirim';
+    }
+    dialog.dataset.state = 'open';
+    dialog.setAttribute('aria-hidden', 'false');
   }
 
   function closeTestEmail() {
